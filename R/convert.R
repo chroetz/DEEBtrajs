@@ -3,7 +3,7 @@ asTrajs <- function(x) {
 }
 
 asTrajs.Trajs <- function(x) {
-  x # TODO: validate Trajs
+  validateTrajs(x)
 }
 
 asTrajs.data.frame <- function(x) {
@@ -28,24 +28,22 @@ asTrajs.list <- function(x) {
   names <- names(x)
   stateIdxs <- getNameNumIdxs(names, "state")
   derivIdxs <- getNameNumIdxs(names, "deriv")
-  tb <- tibble::tibble(
+  trajs <- Trajs(
     time = x$time,
     trajId = if ("trajId" %in% names) x$trajId else NULL,
     state = as.matrix(x[stateIdxs]),
     deriv = if (length(derivIdxs) > 0) as.matrix(x[derivIdxs]) else NULL)
-  class(tb) <- c("Trajs", class(tb))
-  return(tb)
+  return(trajs)
 }
 
 asTrajs.matrix <- function(x) {
   names <- colnames(x)
   stateIdxs <- getNameNumIdxs(names, "state")
   derivIdxs <- getNameNumIdxs(names, "deriv")
-  tb <- tibble::tibble(
+  trajs <- Trajs(
     time = x[,"time"],
     trajId = if ("trajId" %in% names) x[,"trajId"] else NULL,
     state = x[,stateIdxs,drop=FALSE],
     deriv = if (length(derivIdxs) > 0) x[,derivIdxs,drop=FALSE] else NULL)
-  class(tb) <- c("Trajs", class(tb))
-  return(tb)
+  return(trajs)
 }
