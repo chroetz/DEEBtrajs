@@ -1,3 +1,4 @@
+#' @export
 writeTrajs <- function(trajs, file) {
   trajs <- asTrajs(trajs)
   trajsFormated <- data.frame(
@@ -20,8 +21,8 @@ writeTrajs <- function(trajs, file) {
     row.names = FALSE)
 }
 
-
-readDeData <- function(file) {
+#' @export
+readTrajs <- function(file) {
   df <- utils::read.csv(file)
   trajs <- asTrajs(df)
   return(trajs)

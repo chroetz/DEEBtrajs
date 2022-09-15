@@ -1,3 +1,4 @@
+#' @export
 validateTrajs <- function(x) {
   stopifnot(inherits(x, "Trajs"))
   stopifnot(tibble::is_tibble(x))

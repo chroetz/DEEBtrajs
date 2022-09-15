@@ -1,3 +1,4 @@
+#' @export
 hasDeriv <- function(trajs) {
   if (!isTrajs(Trajs)) {
     warning("Object is not a valid Trajs object.")
@@ -6,6 +7,7 @@ hasDeriv <- function(trajs) {
   return("deriv" %in% colnames(trajs))
 }
 
+#' @export
 isTrajs <- function(x) {
   inherits(x, "Trajs") &&
     tibble::is_tibble(x) &&

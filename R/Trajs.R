@@ -1,3 +1,4 @@
+#' @export
 Trajs <- function(time, state, trajId = NULL, deriv = NULL) {
   time <- as.double(time)
   n <- length(time)
