@@ -9,11 +9,6 @@ hasDeriv <- function(trajs) {
 
 #' @export
 isTrajs <- function(x) {
-  inherits(x, "Trajs") &&
-    tibble::is_tibble(x) &&
-    all(c("time", "state") %in% colnames(x)) &&
-    all(colnames(x) %in% c("time", "state", "trajId", "deriv")) &&
-    all(sapply(x, is.numeric)) &&
-    is.matrix(x$state) &&
-    (!"deriv" %in% colnames(x) || is.matrix(x$deriv))
+  res <- tryCatch(validateTrajs(x), error = function(cond) FALSE)
+  return(!isFALSE(res))
 }
