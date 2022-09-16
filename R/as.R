@@ -18,7 +18,7 @@ asTrajs.list <- function(x) {
   names <- names(x)
   stateIdxs <- getNameNumIdxs(names, "state")
   derivIdxs <- getNameNumIdxs(names, "deriv")
-  trajs <- Trajs(
+  trajs <- makeTrajs(
     time = x$time,
     trajId = if ("trajId" %in% names) x$trajId else NULL,
     state = as.matrix(x[stateIdxs]),
@@ -31,7 +31,7 @@ asTrajs.matrix <- function(x) {
   names <- colnames(x)
   stateIdxs <- getNameNumIdxs(names, "state")
   derivIdxs <- getNameNumIdxs(names, "deriv")
-  trajs <- Trajs(
+  trajs <- makeTrajs(
     time = x[,"time"],
     trajId = if ("trajId" %in% names) x[,"trajId"] else NULL,
     state = x[,stateIdxs,drop=FALSE],

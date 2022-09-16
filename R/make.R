@@ -1,5 +1,5 @@
 #' @export
-Trajs <- function(time, state, trajId = NULL, deriv = NULL) {
+makeTrajs <- function(time, state, trajId = NULL, deriv = NULL) {
   time <- as.double(time)
   n <- length(time)
   state <- matrix(as.double(state), nrow = n)
