@@ -1,18 +1,18 @@
 #' @export
 writeTrajs <- function(trajs, file) {
   trajs <- asTrajs(trajs)
-  trajsFormated <- data.frame(
+  trajsFormated <- tibble::tibble(
     trajId = if ("trajId" %in% names(trajs)) format(trajs$trajId) else NULL,
     time = format(trajs$time))
   colnames(trajs$state) <- paste0("state", seq_len(ncol(trajs$state)))
   trajsFormated <- cbind(
     trajsFormated,
-    as.data.frame(format(trajs$state, digits = 1, scientific=FALSE, nsmall=8)))
+    tibble::as_tibble(format(trajs$state, digits = 1, scientific=FALSE, nsmall=8)))
   if (hasDeriv(trajs)) {
     colnames(trajs$deriv) <- paste0("deriv", seq_len(ncol(trajs$deriv)))
     trajsFormated <- cbind(
       trajsFormated,
-      as.data.frame(format(trajs$deriv, digits = 1, scientific=FALSE, nsmall=8)))
+      tibble::as_tibble(format(trajs$deriv, digits = 1, scientific=FALSE, nsmall=8)))
   }
   utils::write.csv(
     trajsFormated,
