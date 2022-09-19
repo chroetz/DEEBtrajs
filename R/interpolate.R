@@ -1,6 +1,6 @@
 #' @export
 interpolateTrajs <- function(trajs, targetTimes) {
-  stopifnot(isTrajs(trajs))
+  trajs <- asTrajs(trajs)
   targetTimes <- as.double(targetTimes)
   stopifnot(all(is.finite(targetTimes)))
   d <- getDim(trajs)

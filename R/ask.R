@@ -1,7 +1,7 @@
 #' @export
 hasDeriv <- function(trajs) {
   if (!isTrajs(trajs)) {
-    warning("Object is not a valid Trajs object.")
+    warning("Object is not a valid Trajs object.", call. = TRUE, immediate. = TRUE)
     return(FALSE)
   }
   return("deriv" %in% colnames(trajs))
@@ -10,7 +10,7 @@ hasDeriv <- function(trajs) {
 #' @export
 hasTrajId <- function(trajs) {
   if (!isTrajs(trajs)) {
-    warning("Object is not a valid Trajs object.")
+    warning("Object is not a valid Trajs object.", call. = TRUE, immediate. = TRUE)
     return(FALSE)
   }
   return("trajId" %in% colnames(trajs))

@@ -1,11 +1,13 @@
 #' @export
-validateTrajs <- function(x) {
+validateTrajs <- function(x, allowAdditionalColumns = TRUE) {
 
   stopifnot(inherits(x, "Trajs"))
   stopifnot(tibble::is_tibble(x))
 
   stopifnot(all(c("time", "state") %in% colnames(x)))
-  stopifnot(all(colnames(x) %in% c("time", "state", "trajId", "deriv")))
+  if (!allowAdditionalColumns) {
+    stopifnot(all(colnames(x) %in% c("time", "state", "trajId", "deriv")))
+  }
 
   stopifnot(all(sapply(x, is.numeric))) # double or integer
 
