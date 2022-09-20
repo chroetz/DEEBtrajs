@@ -23,6 +23,14 @@ getTrajsWithId <- function(trajs, trajId) {
   return(trajs[trajs$trajId == trajId,])
 }
 
+
+#' @export
+getTrajIds <- function(trajs) {
+  trajs <- asTrajs(trajs)
+  if (!hasTrajId(trajs)) return(NULL)
+  return(unique(trajs$trajId))
+}
+
 #' @export
 getInitialState <- function(trajs, initialTime = 0) {
   trajs <- asTrajs(trajs)
