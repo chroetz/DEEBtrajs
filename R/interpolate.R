@@ -3,19 +3,30 @@ interpolateTrajs <- function(trajs, targetTimes) {
   trajs <- asTrajs(trajs)
   targetTimes <- as.double(targetTimes)
   stopifnot(all(is.finite(targetTimes)))
-  d <- getDim(trajs)
+  if (!hasTrajId(trajs)) return(.interpolateTrajs(trajs, targetTimes))
   lst <- lapply(unique(trajs$trajId), \(trajId) {
     traj <- getTrajsWithId(trajs, trajId)
-    beforeSel <- targetTimes < min(traj$time)
-    beforeTimes <- targetTimes[beforeSel]
-    beforeTraj <- traj[rep(1, sum(beforeSel)),]
-    beforeTraj$time <- beforeTimes
-    afterSel <- targetTimes > max(traj$time)
-    afterTimes <- targetTimes[afterSel]
-    afterTraj <- traj[rep(nrow(traj), sum(afterSel)),]
-    afterTraj$time <- afterTimes
-    duringSel <- !(beforeSel | afterSel)
-    duringTimes <- targetTimes[duringSel]
+    traj$trajId <- NULL
+    res <- .interpolateTrajs(traj, targetTimes)
+    res <- setTrajId(res, trajId)
+  })
+  return(bindTrajs(lst))
+}
+
+
+.interpolateTrajs <- function(traj, targetTimes) {
+  d <- getDim(traj)
+  beforeSel <- targetTimes < min(traj$time)
+  beforeTimes <- targetTimes[beforeSel]
+  beforeTraj <- traj[rep(1, sum(beforeSel)),]
+  beforeTraj$time <- beforeTimes
+  afterSel <- targetTimes > max(traj$time)
+  afterTimes <- targetTimes[afterSel]
+  afterTraj <- traj[rep(nrow(traj), sum(afterSel)),]
+  afterTraj$time <- afterTimes
+  duringSel <- !(beforeSel | afterSel)
+  duringTimes <- targetTimes[duringSel]
+  if (length(duringTimes) > 0) {
     state <- do.call(
       cbind,
       lapply(seq_len(d), \(j) stats::approx(traj$time, traj$state[,j], duringTimes)$y))
@@ -27,11 +38,12 @@ interpolateTrajs <- function(trajs, targetTimes) {
     }
     duringTraj <- makeTrajs(
       time = duringTimes,
-      trajId = trajId,
       state = state,
       deriv = deriv
     )
     resTraj <- bindTrajs(beforeTraj, duringTraj, afterTraj)
-  })
-  return(bindTrajs(lst))
+  } else {
+    resTraj <- bindTrajs(beforeTraj, afterTraj)
+  }
+  return(resTraj)
 }
