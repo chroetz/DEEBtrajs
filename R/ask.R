@@ -18,6 +18,6 @@ hasTrajId <- function(trajs) {
 
 #' @export
 isTrajs <- function(x) {
-  res <- tryCatch(validateTrajs(x), error = function(cond) FALSE)
+  res <- tryCatch(validateTrajs(x, force = TRUE), error = function(cond) FALSE)
   return(!isFALSE(res))
 }
