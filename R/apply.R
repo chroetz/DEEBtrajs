@@ -27,6 +27,7 @@ applyTrajId <- function(trajs, fun, ..., simplify = FALSE) {
   }
 }
 
+#' @export
 compareTrajStates <- function(traj1, traj2, stateCompFun, timeRange, nBasePoints = 1000) {
   if (length(timeRange) == 2 && nBasePoints > 0) {
     times <- seq(timeRange[1], timeRange[2], length.out = nBasePoints)
@@ -70,6 +71,7 @@ applyToTrajStateCols <- function(trajs, func) {
     tidyr::unnest(.data$value)
 }
 
+#' @export
 makeTrajsStateConst <- function(traj, fun) {
   res <- applyToTrajStateCols(traj, fun)
   constEsti <- makeTrajs(

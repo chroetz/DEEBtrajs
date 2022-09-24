@@ -8,6 +8,7 @@ getTimeStepTrajs <- function(trajs) {
   mean(diffs)
 }
 
+#' @export
 getTimeStep <- function(time) {
   time <- as.double(time)
   diffs <- diff(time)
