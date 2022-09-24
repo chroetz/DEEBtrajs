@@ -36,10 +36,10 @@ compareTrajStates <- function(traj1, traj2, stateCompFun, timeRange, nBasePoints
     x <- traj1
     y <- traj2
   }
-  stopifnot(all.equal(x$time, x$time))
-  stopifnot(all(y$trajId == y$trajId))
+  stopifnot(all.equal(x$time, y$time))
+  stopifnot(all(x$trajId == y$trajId))
   diffTraj <- makeTrajs(
-    time = times,
+    time = x$time,
     trajId = x$trajId,
     state = stateCompFun(x$state, y$state)) # TODO: apply by ID
   return(diffTraj)
