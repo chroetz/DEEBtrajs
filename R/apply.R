@@ -36,6 +36,7 @@ compareTrajStates <- function(traj1, traj2, stateCompFun, timeRange, nBasePoints
     x <- traj1
     y <- traj2
   }
+  if (length(x$time) != length(y$time)) stop("Trying to compare trajs with different lengths.")
   stopifnot(all.equal(x$time, y$time))
   stopifnot(all(x$trajId == y$trajId))
   diffTraj <- makeTrajs(
