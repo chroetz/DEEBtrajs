@@ -1,12 +1,12 @@
 #' @export
 mapTrajs2Trajs <- function(trajs, fun, ...) {
   trajList <- applyTrajId(trajs, fun, ..., simplify = FALSE)
-  trajList <- lapply(seq_along(trajList), \(i) {
+  trajListWithId <- lapply(seq_along(trajList), \(i) {
     traj <- asTrajs(trajList[[i]])
-    setTrajId(traj, as.integer(names(trajList)[i]))
+    traj <- setTrajId(traj, as.integer(names(trajList)[i]))
     traj
   })
-  return(bindTrajs(trajList))
+  return(bindTrajs(trajListWithId))
 }
 
 applyTrajId <- function(trajs, fun, ..., simplify = FALSE) {
