@@ -9,6 +9,7 @@ mapTrajs2Trajs <- function(trajs, fun, ...) {
   return(bindTrajs(trajListWithId))
 }
 
+#' @export
 applyTrajId <- function(trajs, fun, ..., simplify = FALSE) {
   trajs <- asTrajs(trajs)
   fun <- match.fun(fun)
