@@ -1,7 +1,7 @@
 #' @export
 validateTrajs <- function(x, allowAdditionalColumns = TRUE, force = FALSE) {
 
-  if (isFALSE(getOption("DEETrajs.validate")) && !force) return(invisible(x))
+  if (isFALSE(getOption("DEEBtrajs.validate")) && !force) return(invisible(x))
 
   stopifnot(inherits(x, "Trajs"))
   stopifnot(tibble::is_tibble(x))

@@ -1,7 +1,7 @@
 .onLoad <- function(libname, pkgname) {
-  v <- getOption("DEETrajs.validate")
+  v <- getOption("DEEBtrajs.validate")
   if (is.null(v)) {
-    options(DEETrajs.validate = TRUE)
+    options(DEEBtrajs.validate = TRUE)
   }
   invisible(NULL)
 }

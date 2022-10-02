@@ -4,7 +4,7 @@
 \alias{applyToTrajStateCols}
 \title{trajs to tibble with columns trajId and value}
 \usage{
-applyToTrajStateCols(trajs, func)
+applyToTrajStateCols(trajs, func, ...)
 }
 \description{
 trajs to tibble with columns trajId and value
