@@ -28,8 +28,10 @@ applyTrajId <- function(trajs, fun, ..., simplify = FALSE) {
   }
 }
 
+#' Calls a function and the two state matrices of the trajs and returns the resulting trajs of the same times but potentially of different dimension depending on the function.
+#' If timeRange and nBasePoints are give an interpoation is done before the function is applied.
 #' @export
-compareTrajStates <- function(traj1, traj2, stateCompFun, timeRange, nBasePoints = 1000) {
+compareTrajStates <- function(traj1, traj2, stateCompFun, timeRange = NULL, nBasePoints = 1000) {
   if (length(timeRange) == 2 && nBasePoints > 0) {
     times <- seq(timeRange[1], timeRange[2], length.out = nBasePoints)
     x <- interpolateTrajs(traj1, times)
@@ -48,6 +50,27 @@ compareTrajStates <- function(traj1, traj2, stateCompFun, timeRange, nBasePoints
   return(diffTraj)
 }
 
+
+#' Fills all state rows with at least one NA entry with a given (single) state.
+#' @export
+fillNaState <- function(trajs, state) {
+  sel <- apply(trajs$state, 1, \(x) any(is.na(x)))
+  if (all(!sel)) return(trajs)
+  if (tibble::is_tibble(state)) {
+    filler <-
+      trajs |>
+      dplyr::filter(sel) |>
+      dplyr::left_join(state, by = "trajId")
+    trajs$state[sel, ] <- filler$value
+  } else {
+    trajs$state[sel, ] <- rep(state, each = sum(sel))
+  }
+  return(trajs)
+}
+
+
+
+
 transformTrajState <- function(trajs, func) {
   trajs <- asTrajs(trajs)
   res <- by(
@@ -61,17 +84,20 @@ transformTrajState <- function(trajs, func) {
     state = dplyr::bind_rows(unclass(res)))
 }
 
-applyToTrajStateCols <- function(trajs, func) {
+#' trajs to tibble with columns trajId and value
+#' @export
+applyToTrajStateCols <- function(trajs, func, ...) {
   trajs <- asTrajs(trajs)
   res <- by(
     trajs$state,
     factor(trajs$trajId),
-    \(x) apply(x, 2, func, simplify = TRUE) |> matrix(ncol = getDim(trajs)),
+    \(x) apply(x, 2, func, simplify = TRUE, ...) |> matrix(ncol = getDim(trajs)),
     simplify = FALSE)
   tibble::tibble(trajId = as.integer(names(res)), value = unclass(res)) |>
     tidyr::unnest(.data$value)
 }
 
+#' Applies function to traj state cols and returns a trajs with the same time and dimension but a constant state.
 #' @export
 makeTrajsStateConst <- function(traj, fun) {
   res <- applyToTrajStateCols(traj, fun)

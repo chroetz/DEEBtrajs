@@ -15,6 +15,7 @@ interpolateTrajs <- function(trajs, targetTimes) {
 
 
 .interpolateTrajs <- function(traj, targetTimes) {
+  if (length(traj$time) == length(targetTimes) && all(traj$time == targetTimes)) return(traj)
   d <- getDim(traj)
   beforeSel <- targetTimes < min(traj$time)
   beforeTimes <- targetTimes[beforeSel]
