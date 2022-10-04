@@ -1,6 +1,9 @@
 #' @export
 interpolateTrajs <- function(trajs, targetTimes) {
   trajs <- asTrajs(trajs)
+  if (ConfigOpts::inheritsOptsClass(targetTimes, "Sequence")) {
+    targetTimes <- ConfigOpts::makeSequence(targetTimes)
+  }
   targetTimes <- as.double(targetTimes)
   stopifnot(all(is.finite(targetTimes)))
   if (!hasTrajId(trajs)) return(.interpolateTrajs(trajs, targetTimes))
