@@ -9,16 +9,61 @@ mapTrajs2Trajs <- function(trajs, fun, ...) {
   return(bindTrajs(trajListWithId))
 }
 
+#' Apply function to each trajectory of a DEEBtrajs object.
+#'
+#' Applies the function `fun` to each trajectory identified by the column trajId
+#' of the DEEBtrajs object `trajs`.
+#'
+#' @param trajs A DEEBtrajs object.
+#' @param fun A function that maps a DEEBtrajs object with a single trajsId to
+#'   an arbitrary value.
+#' @param ... Further arguments for `fun`.
+#' @param simplify Should the resulting list of values be simplified to an array
+#'   if possible?
+#' @return A list or an array depending on `simplify`. The trajIds are the names
+#'   of the list entries or the names of the last dimension of the array.
+#'
 #' @export
 applyTrajId <- function(trajs, fun, ..., simplify = FALSE) {
   trajs <- asTrajs(trajs)
   fun <- match.fun(fun)
-  if (!"trajId" %in% names(trajs)) return(fun(trajs, ...))
+  if (!hasTrajId(trajs)) return(fun(trajs, ...))
   trajIds <- unique(trajs$trajId)
   lst <- lapply(trajIds, function(trajId) {
-    trj <- trajs[trajs$trajId == trajId, ]
-    res <- fun(trj, ...)
-    return(res)
+    fun(trajs[trajs$trajId == trajId, ], ...)
+  })
+  names(lst) <- trajIds
+  if (simplify) {
+    return(simplify2array(lst))
+  } else {
+    return(lst)
+  }
+}
+
+#' Apply function to each pair of trajectories from two DEEBtrajs objects.
+#'
+#' Applies the function `fun` to each pair of trajectories with the same
+#' `trajId` of two DEEBtrajs objects. Only trajIds that occur in both objects
+#' are used.
+#'
+#' @param trajs1,trajs2 DEEBtrajs objects.
+#' @param fun A function that maps two DEEBtrajs objects with a single identical
+#'   trajsId to an arbitrary value.
+#' @param ... Further arguments for `fun`.
+#' @param simplify Should the resulting list of values be simplified to an array
+#'   if possible?
+#' @return A list or an array depending on `simplify`. The trajIds are the names
+#'   of the list entries or the names of the last dimension of the array.
+#'
+#' @export
+apply2TrajId <- function(trajs1, trajs2, fun, ..., simplify = FALSE) {
+  trajs1 <- asTrajs(trajs1)
+  trajs2 <- asTrajs(trajs2)
+  fun <- match.fun(fun)
+  if (!hasTrajId(trajs1) && !hasTrajId(trajs2)) return(fun(trajs1, trajs2, ...))
+  trajIds <- intersect(unique(trajs1$trajId), unique(trajs2$trajId))
+  lst <- lapply(trajIds, function(trajId) {
+    fun(trajs1[trajs1$trajId == trajId, ], trajs2[trajs2$trajId == trajId, ], ...)
   })
   names(lst) <- trajIds
   if (simplify) {
@@ -97,16 +142,28 @@ applyToTrajStateCols <- function(trajs, func, ...) {
     tidyr::unnest(.data$value)
 }
 
-#' Applies function to traj state cols and returns a trajs with the same time and dimension but a constant state.
+#' Set all states to a value that is constant in time
+#'
+#' Applies a function to each state dimension of each trajectory of a DEEBtrajs
+#' object and returns a DEEBtrajs object with the same times and trajectory IDs
+#' but each trajectory is constantly the result of the function.
+#'
+#' @param trajs A DEEBtrajs object.
+#' @param fun A function mapping a numeric vector (one column, i.e. dimension,
+#'   of a state matrix) to a single numeric value, e.g., `mean()`.
+#' @return A DEEBtrajs object with the same time and trajId as `trajs` but
+#'   constant states.
+#'
 #' @export
-makeTrajsStateConst <- function(traj, fun) {
-  res <- applyToTrajStateCols(traj, fun)
+makeTrajsStateConst <- function(trajs, fun) {
+  res <- applyToTrajStateCols(trajs, fun)
   constEsti <- makeTrajs(
-    time = traj$time,
-    trajId = traj$trajId,
+    time = trajs$time,
+    trajId = trajs$trajId,
     state = 0)
   constEsti <-
     constEsti |>
     dplyr::left_join(res, by = "trajId") |>
     dplyr::mutate(state = .data$value, value = NULL)
+  return(constEsti)
 }

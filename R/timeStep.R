@@ -1,3 +1,11 @@
+#' Get the time step length of a DEEBtrajs object.
+#'
+#' Assuming there is a single time step length for all trajectories in the a
+#' trajs object, this time step is returned. Otherwise an error is thrown.
+#'
+#' @param trajs A DEEBtrajs object with one or many trajectories.
+#'
+#' @export
 getTimeStepTrajs <- function(trajs) {
   trajs <- asTrajs(trajs)
   diffList <- applyTrajId(trajs, \(traj) getTimeStep(traj$time))

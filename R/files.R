@@ -22,6 +22,21 @@ writeTrajs <- function(trajs, file) {
 }
 
 #' @export
+writeDerivTrajs <- function(trajs, file) {
+  # trajs <- asDerivTrajs(trajs)
+  colnames(trajs$state) <- paste0("state", seq_len(ncol(trajs$state)))
+  colnames(trajs$deriv) <- paste0("deriv", seq_len(ncol(trajs$deriv)))
+  trajsFormated <- cbind(
+    tibble::as_tibble(format(trajs$state, digits = 1, scientific=FALSE, nsmall=8)),
+    tibble::as_tibble(format(trajs$deriv, digits = 1, scientific=FALSE, nsmall=8)))
+  utils::write.csv(
+    trajsFormated,
+    file = file,
+    quote = FALSE,
+    row.names = FALSE)
+}
+
+#' @export
 readTrajs <- function(file) {
   df <- utils::read.csv(file)
   trajs <- asTrajs(df)

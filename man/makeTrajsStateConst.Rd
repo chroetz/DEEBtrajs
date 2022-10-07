@@ -2,10 +2,22 @@
 % Please edit documentation in R/apply.R
 \name{makeTrajsStateConst}
 \alias{makeTrajsStateConst}
-\title{Applies function to traj state cols and returns a trajs with the same time and dimension but a constant state.}
+\title{Set all states to a value that is constant in time}
 \usage{
-makeTrajsStateConst(traj, fun)
+makeTrajsStateConst(trajs, fun)
+}
+\arguments{
+\item{trajs}{A DEEBtrajs object.}
+
+\item{fun}{A function mapping a numeric vector (one column, i.e. dimension,
+of a state matrix) to a single numeric value, e.g., \code{mean()}.}
+}
+\value{
+A DEEBtrajs object with the same time and trajId as \code{trajs} but
+constant states.
 }
 \description{
-Applies function to traj state cols and returns a trajs with the same time and dimension but a constant state.
+Applies a function to each state dimension of each trajectory of a DEEBtrajs
+object and returns a DEEBtrajs object with the same times and trajectory IDs
+but each trajectory is constantly the result of the function.
 }
