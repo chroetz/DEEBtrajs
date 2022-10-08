@@ -27,7 +27,6 @@ mapTrajs2Trajs <- function(trajs, fun, ...) {
 applyTrajId <- function(trajs, fun, ..., simplify = FALSE) {
   trajs <- asTrajs(trajs)
   fun <- match.fun(fun)
-  if (!hasTrajId(trajs)) return(fun(trajs, ...))
   trajIds <- unique(trajs$trajId)
   lst <- lapply(trajIds, function(trajId) {
     fun(trajs[trajs$trajId == trajId, ], ...)

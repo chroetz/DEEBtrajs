@@ -6,7 +6,7 @@ validateTrajs <- function(x, allowAdditionalColumns = TRUE, force = FALSE) {
   stopifnot(inherits(x, "Trajs"))
   stopifnot(tibble::is_tibble(x))
 
-  stopifnot(all(c("time", "state") %in% colnames(x)))
+  stopifnot(all(c("trajId", "time", "state") %in% colnames(x)))
   if (!allowAdditionalColumns) {
     stopifnot(all(colnames(x) %in% c("time", "state", "trajId", "deriv")))
   }
