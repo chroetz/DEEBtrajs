@@ -1,3 +1,17 @@
+#' Apply function to each trajectory of a Trajs object to obtain a new Trajs.
+#'
+#' Applies the function `fun` to each trajectory identified by the column trajId
+#' of the DEEBtrajs object `trajs`. The result of `fun` is converted to a Trajs
+#' and the respective trajId is set. The collected results are returned as a
+#' single Trajs.
+#'
+#' @param trajs A Trajs object.
+#' @param fun A function that maps a Trajs object with a single trajsId to an
+#'   arbitrary value.
+#' @param ... Further arguments for `fun`.
+#' @return A Trajs object with the same trajIds as `trajs` but potentially
+#'   different times.
+#'
 #' @export
 mapTrajs2Trajs <- function(trajs, fun, ...) {
   trajList <- applyTrajId(trajs, fun, ..., simplify = FALSE)
