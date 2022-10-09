@@ -170,10 +170,9 @@ applyToTrajStateCols <- function(trajs, func, ...) {
 #' @export
 makeTrajsStateConst <- function(trajs, fun) {
   res <- applyToTrajStateCols(trajs, fun)
-  constEsti <- makeTrajs(
+  constEsti <- .makeTrajs(
     time = trajs$time,
-    trajId = trajs$trajId,
-    state = 0)
+    trajId = trajs$trajId)
   constEsti <-
     constEsti |>
     dplyr::left_join(res, by = "trajId") |>

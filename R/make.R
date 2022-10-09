@@ -8,11 +8,13 @@
 #'
 #' @export
 makeTrajs <- function(time = NULL, state, trajId = NULL, deriv = NULL) {
-  n <- max(length(time), length(trajId), NROW(state), NROW(deriv))
+  if (is.null(nrow(state))) state <- matrix(state, nrow=1)
+  if (!is.null(deriv) && is.null(nrow(deriv))) deriv <- matrix(deriv, nrow=1)
+  n <- max(length(time), length(trajId), nrow(state), nrow(deriv))
   stopifnot(is.null(time) || length(time) == 1 || length(time) == n)
   stopifnot(is.null(trajId) || length(trajId) == 1 || length(trajId) == n)
-  stopifnot(NROW(state) == 1 || NROW(state) == n)
-  stopifnot(is.null(deriv) || NROW(deriv) == 1 || NROW(deriv) == n)
+  stopifnot(nrow(state) == 1 || nrow(state) == n)
+  stopifnot(is.null(deriv) || nrow(deriv) == 1 || nrow(deriv) == n)
   if (is.null(time)) time <- 0
   if (is.null(trajId)) trajId <- 1
   time <- as.double(time)
@@ -23,6 +25,11 @@ makeTrajs <- function(time = NULL, state, trajId = NULL, deriv = NULL) {
     if (NROW(deriv) == 1) deriv <- deriv[rep(1,n),]
     deriv <- matrix(as.double(deriv), nrow = n)
   }
+  trajs <- .makeTrajs(time, state, trajId, deriv)
+  validateTrajs(trajs)
+}
+
+.makeTrajs <- function(time = NULL, state = NULL, trajId = NULL, deriv = NULL) {
   trajs <- tibble::tibble(
     trajId = trajId,
     time = time,
@@ -40,10 +47,12 @@ makeTrajs <- function(time = NULL, state, trajId = NULL, deriv = NULL) {
 #'
 #' @export
 makeDerivTrajs <- function(state, deriv) {
-  n <- max(NROW(state), NROW(deriv))
-  if (NROW(state) == 1) state <- state[rep(1,n),]
+  if (is.null(nrow(state))) state <- matrix(state, nrow=1)
+  if (is.null(nrow(deriv))) deriv <- matrix(deriv, nrow=1)
+  n <- max(nrow(state), nrow(deriv))
+  if (nrow(state) == 1) state <- state[rep(1,n),]
   state <- matrix(as.double(state), nrow = n)
-  if (NROW(deriv) == 1) deriv <- deriv[rep(1,n),]
+  if (nrow(deriv) == 1) deriv <- deriv[rep(1,n),]
   deriv <- matrix(as.double(deriv), nrow = n)
   trajs <- tibble::tibble(
     state = state,

@@ -40,7 +40,7 @@ interpolateTrajs <- function(trajs, targetTimes) {
         cbind,
         lapply(seq_len(d), \(j) stats::approx(traj$time, traj$state[,j], duringTimes)$y))
     }
-    duringTraj <- makeTrajs(
+    duringTraj <- .makeTrajs(
       time = duringTimes,
       state = state,
       deriv = deriv
