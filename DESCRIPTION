@@ -1,6 +1,6 @@
 Package: DEEBtrajs
 Title: S3 Class for Multiple Trajectories
-Version: 0.0.0.9015
+Version: 0.0.0.9016
 Authors@R: 
     person("Christof", "Schötz", , "math@christof-schoetz.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-3528-4544"))
@@ -17,3 +17,6 @@ Imports:
     tibble,
     tidyr,
     utils
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

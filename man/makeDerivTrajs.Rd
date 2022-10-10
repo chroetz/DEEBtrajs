@@ -12,7 +12,7 @@ makeDerivTrajs(state, deriv)
 \item{deriv}{A numeric matrix with 1 or n rows.}
 }
 \value{
-An object of S3 class Trajs.
+An object of S3 class DerivTrajs.
 }
 \description{
 Create a DerivTrajs Object

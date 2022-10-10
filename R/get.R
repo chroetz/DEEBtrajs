@@ -7,27 +7,25 @@ getDim <- function(trajs) {
 #' @export
 getCount <- function(trajs) {
   trajs <- asTrajs(trajs)
-  if (hasTrajId(trajs)) {
-    trajsIds <- unique(trajs$trajId)
-    n <- sapply(trajsIds, \(id) sum(trajs$trajId == id))
-    names(n) <- trajsIds
-    return(n)
-  }
-  return(nrow(trajs$state))
+  trajsIds <- unique(trajs$trajId)
+  n <- sapply(trajsIds, \(id) sum(trajs$trajId == id))
+  names(n) <- trajsIds
+  return(n)
 }
 
 #' @export
-getTrajsWithId <- function(trajs, trajId) {
+getTrajWithId <- function(trajs, trajId) {
   trajs <- asTrajs(trajs)
-  stopifnot(hasTrajId(trajs))
   return(trajs[trajs$trajId == trajId,])
 }
 
-
+#' Return all unique trajIds
+#'
+#' @param trajs A Trajs object.
+#' @return An integer vector of trajIds.
 #' @export
 getTrajIds <- function(trajs) {
   trajs <- asTrajs(trajs)
-  if (!hasTrajId(trajs)) return(NULL)
   return(unique(trajs$trajId))
 }
 

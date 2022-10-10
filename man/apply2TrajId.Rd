@@ -2,14 +2,14 @@
 % Please edit documentation in R/apply.R
 \name{apply2TrajId}
 \alias{apply2TrajId}
-\title{Apply function to each pair of trajectories from two DEEBtrajs objects.}
+\title{Apply function to each pair of trajectories from two Trajs objects.}
 \usage{
 apply2TrajId(trajs1, trajs2, fun, ..., simplify = FALSE)
 }
 \arguments{
-\item{trajs1, trajs2}{DEEBtrajs objects.}
+\item{trajs1, trajs2}{Trajs objects.}
 
-\item{fun}{A function that maps two DEEBtrajs objects with a single identical
+\item{fun}{A function that maps two Trajs objects with a single identical
 trajsId to an arbitrary value.}
 
 \item{...}{Further arguments for \code{fun}.}
@@ -23,6 +23,6 @@ of the list entries or the names of the last dimension of the array.
 }
 \description{
 Applies the function \code{fun} to each pair of trajectories with the same
-\code{trajId} of two DEEBtrajs objects. Only trajIds that occur in both objects
+\code{trajId} of two Trajs objects. Only trajIds that occur in both objects
 are used.
 }

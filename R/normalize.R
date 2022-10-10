@@ -20,9 +20,14 @@
 #' @export
 calculateNormalization <- function(trajs) {
   trajs <- asTrajs(trajs)
+  d <- getDim(trajs)
   y <- trajs$state
   yMean <- colMeans(y)
-  yCov <- stats::cov(y)
+  if (nrow(trajs$state) < 2) {
+    yCov <- diag(nrow = d, ncol = d)
+  } else {
+    yCov <- stats::cov(y)
+  }
   eig <- eigen(yCov, symmetric = TRUE)
   yCovSqrt <- eig$vectors %*% diag(sqrt(eig$values)) %*% t(eig$vectors)
   list(

@@ -2,15 +2,28 @@
 asTrajs <- function(x) {
   UseMethod("asTrajs")
 }
+#' @export
+asDerivTrajs <- function(x) {
+  UseMethod("asDerivTrajs")
+}
 
 #' @export
 asTrajs.Trajs <- function(x) {
   validateTrajs(x)
 }
+#' @export
+asDerivTrajs.DerivTrajs <- function(x) {
+  validateDerivTrajs(x)
+}
+
 
 #' @export
 asTrajs.data.frame <- function(x) {
   asTrajs.list(x)
+}
+#' @export
+asDerivTrajs.data.frame <- function(x) {
+  asDerivTrajs.list(x)
 }
 
 #' @export
@@ -18,12 +31,23 @@ asTrajs.list <- function(x) {
   names <- names(x)
   stateIdxs <- getNameNumIdxs(names, "state")
   derivIdxs <- getNameNumIdxs(names, "deriv")
+  if (!"time" %in% names) stop("Need `time` entry to convert to Trajs.")
   trajs <- makeTrajs(
-    time = if ("time" %in% names) x$time else NULL,
-    trajId = if ("trajId" %in% names) x$trajId else NULL,
+    time = x$time,
+    trajId = if ("trajId" %in% names) x$trajId else 1,
     state = as.matrix(x[stateIdxs]),
     deriv = if (length(derivIdxs) > 0) as.matrix(x[derivIdxs]) else NULL)
   return(trajs)
+}
+#' @export
+asDerivTrajs.list <- function(x) {
+  names <- names(x)
+  stateIdxs <- getNameNumIdxs(names, "state")
+  derivIdxs <- getNameNumIdxs(names, "deriv")
+  derivTrajs <- makeDerivTrajs(
+    state = as.matrix(x[stateIdxs]),
+    deriv = if (length(derivIdxs) > 0) as.matrix(x[derivIdxs]) else NULL)
+  return(derivTrajs)
 }
 
 #' @export
@@ -31,12 +55,23 @@ asTrajs.matrix <- function(x) {
   names <- colnames(x)
   stateIdxs <- getNameNumIdxs(names, "state")
   derivIdxs <- getNameNumIdxs(names, "deriv")
+  if (!"time" %in% names) stop("Need `time` column to convert to Trajs.")
   trajs <- makeTrajs(
-    time = if ("time" %in% names) x[,"time"],
+    time = x[,"time"],
     trajId = if ("trajId" %in% names) x[,"trajId"] else NULL,
     state = x[,stateIdxs,drop=FALSE],
     deriv = if (length(derivIdxs) > 0) x[,derivIdxs,drop=FALSE] else NULL)
   return(trajs)
+}
+#' @export
+asDerivTrajs.matrix <- function(x) {
+  names <- colnames(x)
+  stateIdxs <- getNameNumIdxs(names, "state")
+  derivIdxs <- getNameNumIdxs(names, "deriv")
+  derivTrajs <- makeDerivTrajs(
+    state = x[,stateIdxs,drop=FALSE],
+    deriv = if (length(derivIdxs) > 0) x[,derivIdxs,drop=FALSE] else NULL)
+  return(derivTrajs)
 }
 
 getNameNumIdxs <- function(names, prefix) {

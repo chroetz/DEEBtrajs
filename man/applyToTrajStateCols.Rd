@@ -2,10 +2,23 @@
 % Please edit documentation in R/apply.R
 \name{applyToTrajStateCols}
 \alias{applyToTrajStateCols}
-\title{trajs to tibble with columns trajId and value}
+\title{Apply function columns of trajs state}
 \usage{
 applyToTrajStateCols(trajs, func, ...)
 }
+\arguments{
+\item{trajs}{A Trajs object.}
+
+\item{func}{A function that takes a column vector of the state of a single
+trajectory and returns a vector or a tibble.}
+
+\item{...}{further arguments to \code{func}}
+}
+\value{
+A tibble with a column trajId and further columns containing the
+results of \code{func}
+}
 \description{
-trajs to tibble with columns trajId and value
+For each column and trajId, apply a function and return a tibble of the
+results.
 }

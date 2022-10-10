@@ -2,14 +2,14 @@
 % Please edit documentation in R/apply.R
 \name{applyTrajId}
 \alias{applyTrajId}
-\title{Apply function to each trajectory of a DEEBtrajs object.}
+\title{Apply function to each trajectory of a Trajs object.}
 \usage{
 applyTrajId(trajs, fun, ..., simplify = FALSE)
 }
 \arguments{
-\item{trajs}{A DEEBtrajs object.}
+\item{trajs}{A Trajs object.}
 
-\item{fun}{A function that maps a DEEBtrajs object with a single trajsId to
+\item{fun}{A function that maps a Trajs object with a single trajsId to
 an arbitrary value.}
 
 \item{...}{Further arguments for \code{fun}.}
@@ -23,5 +23,5 @@ of the list entries or the names of the last dimension of the array.
 }
 \description{
 Applies the function \code{fun} to each trajectory identified by the column trajId
-of the DEEBtrajs object \code{trajs}.
+of the Trajs object \code{trajs}.
 }

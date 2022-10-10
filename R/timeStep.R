@@ -25,3 +25,16 @@ getTimeStep <- function(time) {
   }
   mean(diffs)
 }
+
+#' @export
+isTimeIdentical <- function(trajs1, trajs2) {
+  length(trajs1$time) == length(trajs2$time) &&
+    all(trajs1$time == trajs2$time)
+}
+
+#' @export
+isTimeEqual <- function(trajs1, trajs2) {
+  length(trajs1$time) == length(trajs2$time) &&
+    max(abs(trajs1$time - trajs2$time)) <= .Machine$double.eps*2^8
+}
+

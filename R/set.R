@@ -1,23 +1,19 @@
 #' @export
 setTrajId <- function(trajs, id) {
   trajs <- asTrajs(trajs)
-  id <- as.numeric(id)
+  id <- as.integer(id)
   trajs$trajId <- id
   validateTrajs(trajs)
 }
 
 #' @export
-setDeriv <- function(trajs, method = "center", deriv = NULL) {
+setDeriv <- function(trajs, method = "left", deriv = NULL) {
   trajs <- asTrajs(trajs)
   if (is.null(deriv)) {
-    if (hasTrajId(trajs)) {
-      trajs <- mapTrajs2Trajs(trajs, function(traj) {
-        traj$deriv <- calcDeriv(traj, method)
-        return(traj)
-      })
-    } else {
-      trajs$deriv <- calcDeriv(trajs, method)
-    }
+    trajs <- mapTrajs2Trajs(trajs, function(traj) {
+      traj$deriv <- calcDeriv(traj, method)
+      return(traj)
+    })
   } else {
     deriv <- matrix(as.numeric(as.matrix(deriv)), nrow = nrow(trajs$state))
     trajs$deriv <- deriv

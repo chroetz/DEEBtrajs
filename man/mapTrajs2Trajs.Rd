@@ -20,7 +20,7 @@ different times.
 }
 \description{
 Applies the function \code{fun} to each trajectory identified by the column trajId
-of the DEEBtrajs object \code{trajs}. The result of \code{fun} is converted to a Trajs
+of the Trajs object \code{trajs}. The result of \code{fun} is converted to a Trajs
 and the respective trajId is set. The collected results are returned as a
 single Trajs.
 }

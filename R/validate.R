@@ -1,13 +1,12 @@
 #' @export
-validateTrajs <- function(x, allowAdditionalColumns = TRUE, force = FALSE) {
+validateTrajs <- function(x, allowAdditionalColumns = FALSE, force = FALSE) {
 
   if (isFALSE(getOption("DEEBtrajs.validate")) && !force) return(invisible(x))
 
   stopifnot(inherits(x, "Trajs"))
-  stopifnot(tibble::is_tibble(x))
+  stopifnot(is_tibble(x))
 
-  # TODO: stopifnot(all(c("trajId", "time", "state") %in% colnames(x)))
-  stopifnot(all(c("time", "state") %in% colnames(x)))
+  stopifnot(all(c("trajId", "time", "state") %in% colnames(x)))
   if (!allowAdditionalColumns) {
     stopifnot(all(colnames(x) %in% c("time", "state", "trajId", "deriv")))
   }
@@ -23,5 +22,28 @@ validateTrajs <- function(x, allowAdditionalColumns = TRUE, force = FALSE) {
   stopifnot(!"deriv" %in% colnames(x) || is.matrix(x$deriv))
   stopifnot(!"deriv" %in% colnames(x) || ncol(x$deriv) == ncol(x$state))
 
-  return(invisible(x))
+  return(x)
+}
+
+#' @export
+validateDerivTrajs <- function(x, allowAdditionalColumns = FALSE, force = FALSE) {
+
+  if (isFALSE(getOption("DEEBtrajs.validate")) && !force) return(invisible(x))
+
+  stopifnot(inherits(x, "DerivTrajs"))
+  stopifnot(is_tibble(x))
+
+  stopifnot("state" %in% colnames(x))
+  if (!allowAdditionalColumns) {
+    stopifnot(all(colnames(x) %in% c("state", "deriv")))
+  }
+
+  stopifnot(all(sapply(x, is.numeric))) # double or integer
+
+  stopifnot(is.matrix(x$state))
+  stopifnot(ncol(x$state) >= 1)
+  stopifnot(!"deriv" %in% colnames(x) || is.matrix(x$deriv))
+  stopifnot(!"deriv" %in% colnames(x) || ncol(x$deriv) == ncol(x$state))
+
+  return(x)
 }

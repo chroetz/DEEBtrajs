@@ -7,17 +7,17 @@
 makeTrajsStateConst(trajs, fun)
 }
 \arguments{
-\item{trajs}{A DEEBtrajs object.}
+\item{trajs}{A Trajs object.}
 
 \item{fun}{A function mapping a numeric vector (one column, i.e. dimension,
 of a state matrix) to a single numeric value, e.g., \code{mean()}.}
 }
 \value{
-A DEEBtrajs object with the same time and trajId as \code{trajs} but
+A Trajs object with the same time and trajId as \code{trajs} but
 constant states.
 }
 \description{
-Applies a function to each state dimension of each trajectory of a DEEBtrajs
-object and returns a DEEBtrajs object with the same times and trajectory IDs
+Applies a function to each state dimension of each trajectory of a Trajs
+object and returns a Trajs object with the same times and trajectory IDs
 but each trajectory is constantly the result of the function.
 }

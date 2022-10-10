@@ -8,8 +8,8 @@
 #'
 #' @export
 makeTrajs <- function(time = NULL, state, trajId = NULL, deriv = NULL) {
-  if (is.null(nrow(state))) state <- matrix(state, nrow=1)
-  if (!is.null(deriv) && is.null(nrow(deriv))) deriv <- matrix(deriv, nrow=1)
+  if (is.null(ncol(state))) state <- matrix(state, ncol=1)
+  if (!is.null(deriv) && is.null(ncol(deriv))) deriv <- matrix(deriv, ncol=1)
   n <- max(length(time), length(trajId), nrow(state), nrow(deriv))
   stopifnot(is.null(time) || length(time) == 1 || length(time) == n)
   stopifnot(is.null(trajId) || length(trajId) == 1 || length(trajId) == n)
@@ -30,7 +30,7 @@ makeTrajs <- function(time = NULL, state, trajId = NULL, deriv = NULL) {
 }
 
 .makeTrajs <- function(time = NULL, state = NULL, trajId = NULL, deriv = NULL) {
-  trajs <- tibble::tibble(
+  trajs <- tibble(
     trajId = trajId,
     time = time,
     state = state,
@@ -43,7 +43,7 @@ makeTrajs <- function(time = NULL, state, trajId = NULL, deriv = NULL) {
 #'
 #' @param state A numeric matrix with 1 or n rows.
 #' @param deriv A numeric matrix with 1 or n rows.
-#' @return An object of S3 class Trajs.
+#' @return An object of S3 class DerivTrajs.
 #'
 #' @export
 makeDerivTrajs <- function(state, deriv) {
@@ -54,9 +54,16 @@ makeDerivTrajs <- function(state, deriv) {
   state <- matrix(as.double(state), nrow = n)
   if (nrow(deriv) == 1) deriv <- deriv[rep(1,n),]
   deriv <- matrix(as.double(deriv), nrow = n)
-  trajs <- tibble::tibble(
+  derivTrajs <- .makeDerivTrajs(state, deriv)
+  validateDerivTrajs(derivTrajs)
+  return(derivTrajs)
+}
+
+.makeDerivTrajs <- function(state, deriv) {
+  derivTrajs <- tibble(
     state = state,
     deriv = deriv)
-  class(trajs) <- c("DerivTrajs", class(trajs))
-  return(trajs)
+  class(derivTrajs) <- c("DerivTrajs", class(derivTrajs))
+  return(derivTrajs)
 }
+
