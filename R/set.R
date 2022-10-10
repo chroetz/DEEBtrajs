@@ -7,7 +7,8 @@ setTrajId <- function(trajs, id) {
 }
 
 #' @export
-setDeriv <- function(trajs, method = "left", deriv = NULL) {
+setDeriv <- function(trajs, method = c("forward", "center", "backward"), deriv = NULL) {
+  method <- match.arg(method)
   trajs <- asTrajs(trajs)
   if (is.null(deriv)) {
     trajs <- mapTrajs2Trajs(trajs, function(traj) {
@@ -29,9 +30,9 @@ calcDeriv <- function(traj, method) {
     (traj$time[2:n] - traj$time[1:(n-1)])
   if (method == "center") {
     deriv <- (rbind(deriv[1, ], deriv) + rbind(deriv, deriv[n-1, ])) / 2
-  } else if (method == "left") {
+  } else if (method == "forward") {
     deriv <- rbind(deriv, deriv[n-1, ])
-  } else if (method == "right") {
+  } else if (method == "backward") {
     deriv <- rbind(deriv[1, ], deriv)
   } else {
     stop("Unknown method for calculating the derivative: ", method)
