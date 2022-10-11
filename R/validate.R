@@ -14,7 +14,7 @@ validateTrajs <- function(x, force = FALSE) {
   stopifnot(all(is.finite(x$trajId)))
   stopifnot(all(is.finite(x$time)))
   stopifnot(all(is.finite(x$state)))
-  stopifnot(all(is.finite(x$deriv)))
+  stopifnot(!"deriv" %in% colnames(x) || all(is.finite(x$deriv)))
 
   stopifnot(is.matrix(x$state))
   stopifnot(!"deriv" %in% colnames(x) || is.matrix(x$deriv))
@@ -37,7 +37,7 @@ validateDerivTrajs <- function(x, force = FALSE) {
   stopifnot(all(sapply(x, is.numeric)))
 
   stopifnot(all(is.finite(x$state)))
-  stopifnot(all(is.finite(x$deriv)))
+  stopifnot(!"deriv" %in% colnames(x) || all(is.finite(x$deriv)))
 
   stopifnot(is.matrix(x$state))
   stopifnot(!"deriv" %in% colnames(x) || is.matrix(x$deriv))

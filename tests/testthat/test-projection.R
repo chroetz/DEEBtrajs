@@ -1,12 +1,17 @@
 testRandomProj <- function(d, targetDim, n) {
+  eps <- sqrt(.Machine$double.eps)
   y <- matrix(rnorm(n*d), nrow=n)
   proj <- calculateProjection(y, targetDim)
   reembedded <- proj$embed(proj$project(y))
-  rank <- sum(stats::prcomp(reembedded)$sdev > sqrt(.Machine$double.eps))
+  rank <- sum(stats::prcomp(reembedded)$sdev > eps)
+  rankIn <- sum(stats::prcomp(y)$sdev > eps)
   expect_equal(rank, min(targetDim, d, n))
   totalVar <- sum((y-rep(colMeans(y), each=nrow(y)))^2)
   remainingVar <- sum((y-reembedded)^2)
-  expect_lt(remainingVar, totalVar*targetDim/min(n,d))
+  reembedVar <- sum((reembedded-rep(colMeans(y), each=nrow(y)))^2)
+  expect_equal(totalVar, remainingVar+reembedVar)
+  expect_lt(remainingVar, totalVar*max(0,rankIn-targetDim)/rankIn + eps)
+  expect_gt(reembedVar, totalVar*min(rankIn,targetDim)/rankIn - eps)
 }
 
 test_that("random", {
