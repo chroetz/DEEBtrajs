@@ -1,5 +1,5 @@
 #' @export
-validateTrajs <- function(x, allowAdditionalColumns = FALSE, force = FALSE) {
+validateTrajs <- function(x, force = FALSE) {
 
   if (isFALSE(getOption("DEEBtrajs.validate")) && !force) return(invisible(x))
 
@@ -7,18 +7,16 @@ validateTrajs <- function(x, allowAdditionalColumns = FALSE, force = FALSE) {
   stopifnot(is_tibble(x))
 
   stopifnot(all(c("trajId", "time", "state") %in% colnames(x)))
-  if (!allowAdditionalColumns) {
-    stopifnot(all(colnames(x) %in% c("time", "state", "trajId", "deriv")))
-  }
+  stopifnot(all(colnames(x) %in% c("time", "state", "trajId", "deriv")))
 
-  stopifnot(all(sapply(x, is.numeric))) # double or integer
+  stopifnot(all(sapply(x, is.numeric)))
 
-  # For time and trajId, NA and Inf are not allowed. For state and deriv it is.
+  stopifnot(all(is.finite(x$trajId)))
   stopifnot(all(is.finite(x$time)))
-  stopifnot(!"trajId" %in% colnames(x) || all(is.finite(x$trajId)))
+  stopifnot(all(is.finite(x$state)))
+  stopifnot(all(is.finite(x$deriv)))
 
   stopifnot(is.matrix(x$state))
-  stopifnot(ncol(x$state) >= 1)
   stopifnot(!"deriv" %in% colnames(x) || is.matrix(x$deriv))
   stopifnot(!"deriv" %in% colnames(x) || ncol(x$deriv) == ncol(x$state))
 
@@ -26,7 +24,7 @@ validateTrajs <- function(x, allowAdditionalColumns = FALSE, force = FALSE) {
 }
 
 #' @export
-validateDerivTrajs <- function(x, allowAdditionalColumns = FALSE, force = FALSE) {
+validateDerivTrajs <- function(x, force = FALSE) {
 
   if (isFALSE(getOption("DEEBtrajs.validate")) && !force) return(invisible(x))
 
@@ -34,14 +32,14 @@ validateDerivTrajs <- function(x, allowAdditionalColumns = FALSE, force = FALSE)
   stopifnot(is_tibble(x))
 
   stopifnot("state" %in% colnames(x))
-  if (!allowAdditionalColumns) {
-    stopifnot(all(colnames(x) %in% c("state", "deriv")))
-  }
+  stopifnot(all(colnames(x) %in% c("state", "deriv")))
 
-  stopifnot(all(sapply(x, is.numeric))) # double or integer
+  stopifnot(all(sapply(x, is.numeric)))
+
+  stopifnot(all(is.finite(x$state)))
+  stopifnot(all(is.finite(x$deriv)))
 
   stopifnot(is.matrix(x$state))
-  stopifnot(ncol(x$state) >= 1)
   stopifnot(!"deriv" %in% colnames(x) || is.matrix(x$deriv))
   stopifnot(!"deriv" %in% colnames(x) || ncol(x$deriv) == ncol(x$state))
 
