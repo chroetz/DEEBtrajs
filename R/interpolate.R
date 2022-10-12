@@ -1,16 +1,26 @@
 #' @export
-interpolateTrajs <- function(trajs, targetTimes) {
+interpolateTrajs <- function(trajs, targetTimes = NULL, interSteps = NULL) {
   trajs <- asTrajs(trajs)
-  if (ConfigOpts::inheritsOptsClass(targetTimes, "Sequence")) {
-    targetTimes <- ConfigOpts::makeSequence(targetTimes)
+  if (!is.null(targetTimes)) {
+    stopifnot(is.null(interSteps))
+    if (ConfigOpts::inheritsOptsClass(targetTimes, "Sequence")) {
+      targetTimes <- ConfigOpts::makeSequence(targetTimes) # TODO: use as.double() for Opts?
+    }
+    targetTimes <- as.double(targetTimes)
+    stopifnot(all(is.finite(targetTimes)))
+    return(mapTrajs2Trajs(trajs, .interpolateTrajsTargetTimes, targetTimes=targetTimes))
   }
-  targetTimes <- as.double(targetTimes)
-  stopifnot(all(is.finite(targetTimes)))
-  mapTrajs2Trajs(trajs, .interpolateTrajs, targetTimes=targetTimes)
+
+  stopifnot(!is.null(interSteps))
+  interSteps <- as.integer(interSteps)
+  stopifnot(length(interSteps) == 1)
+  stopifnot(is.finite(interSteps))
+  stopifnot(interSteps > 0)
+  return(mapTrajs2Trajs(trajs, .interpolateTrajsInterSteps, interSteps=interSteps))
 }
 
 
-.interpolateTrajs <- function(traj, targetTimes) {
+.interpolateTrajsTargetTimes <- function(traj, targetTimes) {
   if (length(traj$time) == length(targetTimes) && all(traj$time == targetTimes)) return(traj)
   beforeSel <- targetTimes < min(traj$time)
   beforeTimes <- targetTimes[beforeSel]
@@ -38,6 +48,27 @@ interpolateTrajs <- function(trajs, targetTimes) {
     resTraj <- dplyr::bind_rows(beforeTraj, afterTraj)
   }
   return(resTraj)
+}
+
+.interpolateTrajsInterSteps <- function(traj, interSteps) {
+  if (interSteps == 1) return(traj)
+  tms <- c(
+    vapply(seq_len(length(traj$time)-1), \(i) {
+      seq(traj$time[i], traj$time[i+1], length.out = interSteps+1)[-(interSteps+1)]
+    }, double(interSteps)),
+    traj$time[length(traj$time)]
+  )
+  state <- interpolateMatrix(traj$time, traj$state, tms)
+  deriv <- NULL
+  if ("deriv" %in% names(traj)) {
+    deriv <- interpolateMatrix(traj$time, traj$deriv, tms)
+  }
+  .makeTrajs(
+    time = tms,
+    state = state,
+    deriv = deriv,
+    trajId = traj$trajId[1]
+  )
 }
 
 interpolateMatrix <- function(time, mat, targetTimes) {

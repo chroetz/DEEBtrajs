@@ -28,7 +28,7 @@ calculateProjection <- function(y, dim) {
   center <- colMeans(y)
   yCentered <- sweep(y, 2, center)
   if (n >= 2) {
-    covmat <- cov(yCentered)
+    covmat <- stats::cov(yCentered)
   } else {
     covmat <- matrix(0, nrow=d, ncol=3)
   }
