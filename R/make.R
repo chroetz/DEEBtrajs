@@ -42,18 +42,20 @@ makeTrajs <- function(time = NULL, state, trajId = NULL, deriv = NULL) {
 #' Create a DerivTrajs Object
 #'
 #' @param state A numeric matrix with 1 or n rows.
-#' @param deriv A numeric matrix with 1 or n rows.
+#' @param deriv `NULL` or a numeric matrix with 1 or n rows.
 #' @return An object of S3 class DerivTrajs.
 #'
 #' @export
-makeDerivTrajs <- function(state, deriv) {
+makeDerivTrajs <- function(state, deriv = NULL) {
   if (is.null(nrow(state))) state <- matrix(state, nrow=1)
-  if (is.null(nrow(deriv))) deriv <- matrix(deriv, nrow=1)
+  if (!is.null(deriv) && is.null(nrow(deriv))) deriv <- matrix(deriv, nrow=1)
   n <- max(nrow(state), nrow(deriv))
   if (nrow(state) == 1) state <- state[rep(1,n),]
   state <- matrix(as.double(state), nrow = n)
-  if (nrow(deriv) == 1) deriv <- deriv[rep(1,n),]
-  deriv <- matrix(as.double(deriv), nrow = n)
+  if (!is.null(deriv)) {
+    if (nrow(deriv) == 1) deriv <- deriv[rep(1,n),]
+    deriv <- matrix(as.double(deriv), nrow = n)
+  }
   derivTrajs <- .makeDerivTrajs(state, deriv)
   validateDerivTrajs(derivTrajs)
   return(derivTrajs)

@@ -4,12 +4,12 @@
 \alias{makeDerivTrajs}
 \title{Create a DerivTrajs Object}
 \usage{
-makeDerivTrajs(state, deriv)
+makeDerivTrajs(state, deriv = NULL)
 }
 \arguments{
 \item{state}{A numeric matrix with 1 or n rows.}
 
-\item{deriv}{A numeric matrix with 1 or n rows.}
+\item{deriv}{\code{NULL} or a numeric matrix with 1 or n rows.}
 }
 \value{
 An object of S3 class DerivTrajs.

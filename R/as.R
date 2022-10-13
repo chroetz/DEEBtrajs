@@ -16,6 +16,13 @@ asDerivTrajs.DerivTrajs <- function(x) {
   validateDerivTrajs(x)
 }
 
+#' @export
+asDerivTrajs.Trajs <- function(x) {
+  makeDerivTrajs(
+    state = x$state,
+    deriv = if ("deriv" %in% names(x)) x$deriv else NULL)
+}
+
 
 #' @export
 asTrajs.data.frame <- function(x) {

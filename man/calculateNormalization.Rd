@@ -7,9 +7,9 @@
 calculateNormalization(trajs)
 }
 \arguments{
-\item{trajs}{An object that can be converted to a DEEBtrajs object. The
-reference. It can have one or several trajsIds. All calculations are
-performed without referencing the trajsId.}
+\item{trajs}{A Trajs or DerivTrajs object. The reference. It can have one or
+several trajsIds. All calculations are performed without referencing the
+trajsId.}
 }
 \value{
 A named list of two functions. \describe{ \item{\code{normalize}}{The
@@ -17,14 +17,14 @@ function \code{normalize(tr)}.} \item{\code{denormalize}}{The function
 \code{denormalize(tr)}.} }
 }
 \description{
-From the state of a reference DEEBtrajs object, two functions are create:
-\code{normalize(tr)} and \code{denormalize(tr)}. Both take a DEEBtrajs object \code{tr} and
-return it with a linearly transformed state. The linear transformation of
-\code{normalize(tr)} is such that applied to the reference DEEBtrajs object the
-state data has mean 0 and identity covariance. \code{denormalize(tr)} is the
-inverse operation.
+From the state of a reference Trajs object, two functions are create:
+\code{normalize(tr)} and \code{denormalize(tr)}. Both take a Trajs or DerivTrajs object
+\code{tr} and return it with a linearly transformed \code{state} and \code{deriv}. The
+linear transformation of \code{normalize(tr)} is such that applied to the
+reference object the state data has mean 0 and identity covariance.
+\code{denormalize(tr)} is the inverse operation.
 }
 \details{
 The function assumes that the transformations are well-defined by the state
-of the reference DEEBtrajs object.
+of the reference Trajs or DerivTrajs object.
 }
