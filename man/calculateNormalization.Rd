@@ -4,12 +4,15 @@
 \alias{calculateNormalization}
 \title{Calculate Mean-Covariance-Normalization Functions}
 \usage{
-calculateNormalization(trajs)
+calculateNormalization(trajs, method = c("MeanAndCov", "None"))
 }
 \arguments{
 \item{trajs}{A Trajs or DerivTrajs object. The reference. It can have one or
 several trajsIds. All calculations are performed without referencing the
 trajsId.}
+
+\item{method}{A single character string. Choose \code{"None"} for making the two
+return functions identities.}
 }
 \value{
 A named list of two functions. \describe{ \item{\code{normalize}}{The
