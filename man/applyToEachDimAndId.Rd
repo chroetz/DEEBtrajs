@@ -4,7 +4,7 @@
 \alias{applyToEachDimAndId}
 \title{Apply function columns of Trajs state and obtain a new Trajs.}
 \usage{
-applyToEachDimAndId(trajs, func, timeOut, ...)
+applyToEachDimAndId(trajs, func, outTime, ...)
 }
 \arguments{
 \item{trajs}{A Trajs object.}
@@ -14,7 +14,7 @@ of the state of a single trajectory, the expected times for the resulting
 Trajs, and possibly further arguments, It returns a Trajs (with arbitrary
 trajId as this will be overwritten).}
 
-\item{timeOut}{A numeric vector of times for the output Trajs.}
+\item{outTime}{A numeric vector of times for the output Trajs.}
 
 \item{...}{further arguments to \code{func}}
 }

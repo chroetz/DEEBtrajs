@@ -13,18 +13,18 @@
 #' @param trajs A Trajs or DerivTrajs object. The reference. It can have one or
 #'   several trajsIds. All calculations are performed without referencing the
 #'   trajsId.
-#' @param method A single character string. Choose `"None"` for making the two
+#' @param method A single character string. Choose `"none"` for making the two
 #'   return functions identities.
 #' @return A named list of two functions. \describe{ \item{`normalize`}{The
 #'   function `normalize(tr)`.} \item{`denormalize`}{The function
 #'   `denormalize(tr)`.} }
 #'
 #' @export
-calculateNormalization <- function(trajs, method = c("MeanAndCov", "None")) {
+calculateNormalization <- function(trajs, method = c("meanAndCov", "none")) {
   trajs <- asDerivTrajs(trajs)
   method <- match.arg(method)
 
-  if (method == "None") {
+  if (method == "none") {
     return(list(normalize = \(tr) tr, denormalize = \(tr) tr))
   }
 

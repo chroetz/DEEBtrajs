@@ -147,21 +147,21 @@ makeTrajsStateConst <- function(trajs, fun) {
 #'   of the state of a single trajectory, the expected times for the resulting
 #'   Trajs, and possibly further arguments, It returns a Trajs (with arbitrary
 #'   trajId as this will be overwritten).
-#' @param timeOut A numeric vector of times for the output Trajs.
+#' @param outTime A numeric vector of times for the output Trajs.
 #' @param ... further arguments to `func`
 #' @return A Trajs object.
 #'
 #' @export
-applyToEachDimAndId <- function(trajs, func, timeOut, ...) {
+applyToEachDimAndId <- function(trajs, func, outTime, ...) {
   trajs <- asTrajs(trajs)
-  fun <- match.fun(fun)
+  func <- match.fun(func)
   d <- ncol(trajs$state)
-  dimFun <- function(traj, timeOut, ...) {
-    stateAndDeriv <- lapply(seq_len(d), \(j) fun(traj$time, traj$state[,j], timeOut, ...))
+  dimFun <- function(traj, outTime, ...) {
+    stateAndDeriv <- lapply(seq_len(d), \(j) func(traj$time, traj$state[,j], outTime, ...))
     makeTrajs(
-      time = timeOut,
+      time = outTime,
       state = sapply(stateAndDeriv, \(x) x$state),
       deriv = sapply(stateAndDeriv, \(x) x$deriv))
   }
-  mapTrajs2Trajs(trajs, dimFun, timeOut = timeOut, ...)
+  mapTrajs2Trajs(trajs, dimFun, outTime = outTime, ...)
 }

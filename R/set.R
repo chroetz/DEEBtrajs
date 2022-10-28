@@ -7,14 +7,16 @@ setTrajId <- function(trajs, id) {
 }
 
 #' @export
-setDeriv <- function(trajs, method = c("forward", "center", "backward"), deriv = NULL) {
+setDeriv <- function(trajs, method = c("forward", "center", "backward", "none"), deriv = NULL) {
   method <- match.arg(method)
   trajs <- asTrajs(trajs)
   if (is.null(deriv)) {
-    trajs <- mapTrajs2Trajs(trajs, function(traj) {
-      traj$deriv <- calcDeriv(traj, method)
-      return(traj)
-    })
+    if (method != "none") {
+      trajs <- mapTrajs2Trajs(trajs, function(traj) {
+        traj$deriv <- calcDeriv(traj, method)
+        return(traj)
+      })
+    }
   } else {
     deriv <- matrix(as.numeric(as.matrix(deriv)), nrow = nrow(trajs$state))
     trajs$deriv <- deriv
