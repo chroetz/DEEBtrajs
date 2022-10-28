@@ -50,14 +50,23 @@ interpolateTrajs <- function(trajs, targetTimes = NULL, interSteps = NULL) {
   return(resTraj)
 }
 
+#' @export
+interpolateTime <- function(time, interSteps) {
+  c(
+    vapply(
+      seq_len(length(time)-1),
+      \(i) {
+        seq(time[i], time[i+1], length.out = interSteps+1)[-(interSteps+1)]
+      },
+      double(interSteps)
+    ),
+    time[length(time)]
+  )
+}
+
 .interpolateTrajsInterSteps <- function(traj, interSteps) {
   if (interSteps == 1) return(traj)
-  tms <- c(
-    vapply(seq_len(length(traj$time)-1), \(i) {
-      seq(traj$time[i], traj$time[i+1], length.out = interSteps+1)[-(interSteps+1)]
-    }, double(interSteps)),
-    traj$time[length(traj$time)]
-  )
+  tms <- interpolateTime(traj$time, interSteps)
   state <- interpolateMatrix(traj$time, traj$state, tms)
   deriv <- NULL
   if ("deriv" %in% names(traj)) {
