@@ -81,6 +81,12 @@ interpolateTime <- function(time, interSteps) {
 }
 
 interpolateMatrix <- function(time, mat, targetTimes) {
+  naRows <- apply(mat, 1, \(x) any(is.na(x)))
+  time <- time[!naRows]
+  mat <- mat[!naRows,]
+  if (nrow(mat) == 0) {
+    return(matrix(nrow = length(time), ncol = ncol(mat)))
+  }
   if (nrow(mat) == 1) {
     return(mat[rep(1, length(time)),,drop=FALSE])
   }
