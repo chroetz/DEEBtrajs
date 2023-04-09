@@ -5,6 +5,25 @@ getDim <- function(trajs) {
 }
 
 #' @export
+getEqualTime <- function(trajs) {
+  trajs <- asTrajs(trajs)
+  res <- applyTrajId(trajs, \(traj) traj$time)
+  allEqual <- TRUE
+  for (i in seq_len(length(res) - 1)) {
+    if (length(res[[1]]) != length(res[[1+i]])) {
+      allEqual <- FALSE
+      break
+    }
+    if (max(abs(res[[1]]-res[[1+i]])) > sqrt(.Machine$double.eps)) {
+      allEqual <- FALSE
+      break
+    }
+  }
+  if (!allEqual) stop("Require times of different TrajIds to be equal.")
+  return(res[[1]])
+}
+
+#' @export
 getCount <- function(trajs) {
   trajs <- asTrajs(trajs)
   trajsIds <- unique(trajs$trajId)

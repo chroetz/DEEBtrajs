@@ -4,7 +4,10 @@
 \alias{calculateNormalization}
 \title{Calculate Mean-Covariance-Normalization Functions}
 \usage{
-calculateNormalization(trajs, method = c("meanAndCov", "none"))
+calculateNormalization(
+  trajs,
+  method = c("meanAndCov", "mean", "scale", "meanAndScale", "none")
+)
 }
 \arguments{
 \item{trajs}{A Trajs or DerivTrajs object. The reference. It can have one or

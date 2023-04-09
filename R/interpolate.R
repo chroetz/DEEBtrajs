@@ -1,5 +1,8 @@
 #' @export
 interpolateTrajs <- function(trajs, targetTimes = NULL, interSteps = NULL) {
+
+  # TODO allow for pattern target trajs to get interpolation of different times for different trajIds
+
   trajs <- asTrajs(trajs)
   if (!is.null(targetTimes)) {
     stopifnot(is.null(interSteps))
@@ -83,7 +86,8 @@ interpolateTime <- function(time, interSteps) {
 interpolateMatrix <- function(time, mat, targetTimes) {
   naRows <- apply(mat, 1, \(x) any(is.na(x)))
   time <- time[!naRows]
-  mat <- mat[!naRows,]
+  mat <- mat[!naRows,,drop=FALSE]
+
   if (nrow(mat) == 0) {
     return(matrix(nrow = length(time), ncol = ncol(mat)))
   }

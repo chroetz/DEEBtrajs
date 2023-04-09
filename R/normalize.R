@@ -20,7 +20,13 @@
 #'   `denormalize(tr)`.} }
 #'
 #' @export
-calculateNormalization <- function(trajs, method = c("meanAndCov", "none")) {
+calculateNormalization <- function(trajs, method = c("meanAndCov", "mean", "scale", "meanAndScale", "none")) {
+
+  # TODO:
+  # * separate mean and scale normalization methods
+  # * add methods to doc
+  # * add test cases
+
   trajs <- asDerivTrajs(trajs)
   method <- match.arg(method)
 
@@ -30,15 +36,34 @@ calculateNormalization <- function(trajs, method = c("meanAndCov", "none")) {
 
   d <- ncol(trajs$state)
   y <- trajs$state
-  yMean <- colMeans(y)
-  if (nrow(y) < 2) {
-    yCov <- diag(1, nrow = d, ncol = d)
+
+  yMean <- NULL
+  if (method %in% c("mean", "meanAndScale", "meanAndCov")) {
+    yMean <- colMeans(y)
   } else {
-    yCov <- stats::cov(y)
+    yMean <- rep(0, ncol(y))
   }
+
+  yCov <- NULL
+  if (method == "meanAndCov") {
+    if (nrow(y) < 2) {
+      yCov <- diag(1, nrow = d, ncol = d)
+    } else {
+      yCov <- stats::cov(y)
+    }
+  } else if (method == "meanAndScale") {
+    scale <- colMeans((y-rep(yMean, each=nrow(y)))^2)
+    yCov <- diag(scale, nrow = d, ncol = d)
+  } else if (method == "scale") {
+    scale <- sum(colMeans(y^2))
+    yCov <- diag(scale, nrow = d, ncol = d)
+  } else {
+    yCov <- diag(1, nrow = d, ncol = d)
+  }
+
   eig <- eigen(yCov, symmetric = TRUE)
   if (any(abs(eig$values) < sqrt(.Machine$double.eps))) { # deal with singular matrices
-    dg <- apply(y, 2, stats::sd)
+    dg <- apply(y, 2, stats::sd) # TODO: does not work for nrow(y)==1
     dg[abs(dg) < sqrt(.Machine$double.eps)] <- 1
     yCovSqrt <- diag(dg, nrow = d, ncol = d)
   } else {
