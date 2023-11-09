@@ -67,6 +67,23 @@ interpolateTime <- function(time, interSteps) {
   )
 }
 
+#' @export
+interpolateTimeAvg <- function(trajs, interSteps) {
+  avgTimeStep <- getTimeStepTrajs(trajs, requireConst=FALSE)
+  nSteps <- round(diff(range(trajs$time)) / avgTimeStep * interSteps + 1)
+  outTime <- seq(min(trajs$time), max(trajs$time), length.out = nSteps)
+  outTime[length(outTime)] <- max(trajs$time)
+  return(outTime)
+}
+
+#' @export
+interpolateTimeAdaptive <- function(trajs, interSteps) {
+  if (isTimeStepConstTrajs(trajs))
+    interpolateTime(trajs$time, interSteps)
+  else
+    interpolateTimeAvg(trajs, interSteps)
+}
+
 .interpolateTrajsInterSteps <- function(traj, interSteps) {
   if (interSteps == 1) return(traj)
   tms <- interpolateTime(traj$time, interSteps)

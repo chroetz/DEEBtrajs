@@ -1,29 +1,44 @@
-#' Get the time step length of a DEEBtrajs object.
+#' Get the (average) time step length of a DEEBtrajs object.
 #'
-#' Assuming there is a single time step length for all trajectories in the a
-#' trajs object, this time step is returned. Otherwise an error is thrown.
+#' Returns the mean time step over all trajectories and steps.
 #'
 #' @param trajs A DEEBtrajs object with one or many trajectories.
+#' @param requireConst If `TRUE`, an error is raised if time steps differ between
+#'   steps or trajectories.
 #'
 #' @export
-getTimeStepTrajs <- function(trajs) {
+getTimeStepTrajs <- function(trajs, requireConst = TRUE) {
   trajs <- asTrajs(trajs)
-  diffList <- applyTrajId(trajs, \(traj) getTimeStep(traj$time))
+  diffList <- applyTrajId(trajs, \(traj) getTimeStep(traj$time, requireConst))
   diffs <- unlist(diffList)
-  if (diff(range(diffs)) > sqrt(.Machine$double.eps)) {
+  if (requireConst && diff(range(diffs)) > sqrt(.Machine$double.eps)) {
+    stop("Time steps differ!")
+  }
+  return(mean(diffs))
+}
+
+#' @export
+isTimeStepConstTrajs <- function(trajs) {
+  trajs <- asTrajs(trajs)
+  isConst <- applyTrajId(trajs, \(traj) isTimeStepConst(traj$time))
+  return(all(unlist(isConst)))
+}
+
+#' @export
+getTimeStep <- function(time, requireConst = TRUE) {
+  time <- as.double(time)
+  diffs <- diff(time)
+  if (requireConst && diff(range(diffs)) > sqrt(.Machine$double.eps)) {
     stop("Time steps differ!")
   }
   mean(diffs)
 }
 
 #' @export
-getTimeStep <- function(time) {
+isTimeStepConst <- function(time) {
   time <- as.double(time)
   diffs <- diff(time)
-  if (diff(range(diffs)) > sqrt(.Machine$double.eps)) {
-    stop("Time steps differ!")
-  }
-  mean(diffs)
+  return(diff(range(diffs)) < sqrt(.Machine$double.eps))
 }
 
 #' @export

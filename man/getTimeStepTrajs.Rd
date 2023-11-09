@@ -2,14 +2,16 @@
 % Please edit documentation in R/timeStep.R
 \name{getTimeStepTrajs}
 \alias{getTimeStepTrajs}
-\title{Get the time step length of a DEEBtrajs object.}
+\title{Get the (average) time step length of a DEEBtrajs object.}
 \usage{
-getTimeStepTrajs(trajs)
+getTimeStepTrajs(trajs, requireConst = TRUE)
 }
 \arguments{
 \item{trajs}{A DEEBtrajs object with one or many trajectories.}
+
+\item{requireConst}{If \code{TRUE}, an error is raised if time steps differ between
+steps or trajectories.}
 }
 \description{
-Assuming there is a single time step length for all trajectories in the a
-trajs object, this time step is returned. Otherwise an error is thrown.
+Returns the mean time step over all trajectories and steps.
 }
