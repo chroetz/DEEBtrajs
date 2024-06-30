@@ -62,7 +62,7 @@ calculateNormalization <- function(trajs, method = c("meanAndCov", "mean", "scal
   }
 
   eig <- eigen(yCov, symmetric = TRUE)
-  if (any(abs(eig$values) < sqrt(.Machine$double.eps))) { # deal with singular matrices
+  if (any(eig$values < sqrt(.Machine$double.eps))) { # deal with singular matrices
     dg <- apply(y, 2, stats::sd) # TODO: does not work for nrow(y)==1
     dg[abs(dg) < sqrt(.Machine$double.eps)] <- 1
     yCovSqrt <- diag(dg, nrow = d, ncol = d)
